@@ -1,0 +1,74 @@
+plugins {
+    id "com.jfrog.bintray" version "1.7"
+}
+
+version '1.0'
+group 'com.sagiantebi'
+
+ext {
+    projectName = 'android-canvas-animations'
+}
+
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 29
+    buildToolsVersion "28.0.3"
+
+    defaultConfig {
+        minSdkVersion 15
+        targetSdkVersion 29
+        versionCode 1
+        versionName project["version"]
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+
+task sourcesJar (type: Jar) {
+    classifier = 'sources'
+    from android.sourceSets.main.java.srcDirs
+}
+
+publishing {
+    publications {
+        PluginPublisher(MavenPublication) {
+            groupId group
+            artifactId projectName
+            version project['version']
+            artifact("$buildDir/outputs/aar/${project.getName()}-release.aar") {
+                builtBy build
+            }
+            artifact(sourcesJar)
+        }
+    }
+}
+
+bintray {
+    user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
+    key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_API_KEY')
+    configurations = ['archives']
+    pkg {
+        repo = 'mvn'
+        name = project['name']
+        userOrg = user
+        licenses = ['Apache-2.0']
+        vcsUrl = 'https://github.com/sagiantebi/android-canvas-animations'
+        version {
+            name = project['version']
+        }
+    }
+}
+
+bintrayUpload.dependsOn(clean, build)
+
+dependencies {
+    // nothing here, hurray
+}
