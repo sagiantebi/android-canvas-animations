@@ -67,7 +67,7 @@ bintray {
     }
 }
 
-bintrayUpload.dependsOn(clean, build)
+bintrayUpload.dependsOn(build)
 
 dependencies {
     // nothing here, hurray
