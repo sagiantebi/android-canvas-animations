@@ -57,7 +57,7 @@ bintray {
     configurations = ['archives']
     pkg {
         repo = 'mvn'
-        name = project['name']
+        name = projectName
         userOrg = user
         licenses = ['Apache-2.0']
         vcsUrl = 'https://github.com/sagiantebi/android-canvas-animations'
